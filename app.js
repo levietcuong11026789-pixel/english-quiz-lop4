@@ -6,7 +6,8 @@
 const QUIZ_SIZE = 30;          // số câu mỗi lượt luyện tập
 const QUIZ_MINUTES = 20;       // thời gian luyện tập (phút)
 const EXAM_SIZE = 30;          // số câu đề thi thử
-const EXAM_MINUTES = 25;       // thời gian đề thi thử (phút)
+const EXAM_MINUTES = 25;       // thời gian đề thi thử nâng cao (phút)
+const EXAM_BASIC_MINUTES = 20; // thời gian đề thi thử cơ bản (phút)
 
 const LS = {
   customQuestions: "ef4_custom_questions",
@@ -36,7 +37,7 @@ const BADGES = [
 // ---------- Trạng thái ----------
 let selectedTopic = "all";
 let selectedLevel = "all";     // "all" | 1 | 2
-let lastMode = "practice";
+let lastMode = { mode: "practice", examLevel: 2 };
 let quiz = null;
 
 // ---------- Tiện ích ----------
@@ -174,7 +175,7 @@ function pickLeastSeen(pool, n, seen, keyFn) {
 }
 
 // ---------- Dựng bộ câu hỏi cho 1 lượt ----------
-function buildQuizItems({ topic, level, mode }) {
+function buildQuizItems({ topic, level, mode, examLevel }) {
   const seen = load(LS.seen, {});
   const size = mode === "exam" ? EXAM_SIZE : QUIZ_SIZE;
   const useTopic = topic !== "all" && mode !== "exam";
@@ -194,9 +195,15 @@ function buildQuizItems({ topic, level, mode }) {
 
   let spec, fill;
   if (mode === "exam") {
-    // Đề thi thử: đủ dạng, thiên về nâng cao
-    spec = [["odd", 4], ["error", 4], ["transform", 4], ["reading", 4], ["reorder", 3], ["spell", 2]];
-    fill = ["mcAdv", "mcBasic"];
+    if (examLevel === 1) {
+      // Đề thi thử cơ bản: từ vựng & câu đơn giản
+      spec = [["spell", 3], ["reorder", 3], ["match", 3], ["odd", 3]];
+      fill = ["mcBasic"];
+    } else {
+      // Đề thi thử nâng cao: đủ dạng, thiên về khó (kiểu HSG)
+      spec = [["odd", 4], ["error", 4], ["transform", 4], ["reading", 4], ["reorder", 3], ["spell", 2]];
+      fill = ["mcAdv", "mcBasic"];
+    }
   } else if (level === 2) {
     spec = [["odd", 4], ["error", 4], ["transform", 4], ["reading", 4], ["reorder", 2]];
     fill = ["mcAdv", "mcBasic"];
@@ -235,13 +242,31 @@ function ensureHomeElements() {
       renderHome();
     });
   }
-  if (!$("btn-exam")) {
-    const ex = document.createElement("button");
-    ex.id = "btn-exam";
-    ex.className = "btn btn-big btn-exam";
-    ex.innerHTML = "📝 Thi thử cuối kỳ (đề nâng cao)";
-    startBtn.parentElement.insertBefore(ex, startBtn.nextSibling);
-    ex.onclick = () => startQuiz("exam");
+  if (!$("btn-exam-basic")) {
+    const eb = document.createElement("button");
+    eb.id = "btn-exam-basic";
+    eb.className = "btn btn-big btn-exam btn-exam-basic";
+    eb.innerHTML = "📝 Thi thử cuối kỳ — Đề cơ bản";
+    startBtn.parentElement.insertBefore(eb, startBtn.nextSibling);
+    eb.onclick = () => startQuiz("exam", 1);
+
+    const ea = document.createElement("button");
+    ea.id = "btn-exam-adv";
+    ea.className = "btn btn-big btn-exam";
+    ea.innerHTML = "📝 Thi thử cuối kỳ — Đề nâng cao";
+    eb.insertAdjacentElement("afterend", ea);
+    ea.onclick = () => startQuiz("exam", 2);
+  }
+  if (!$("btn-leaderboard")) {
+    const actions = document.querySelector(".home-actions");
+    if (actions) {
+      const lb = document.createElement("button");
+      lb.id = "btn-leaderboard";
+      lb.className = "btn btn-secondary";
+      lb.innerHTML = "🏆 Xếp hạng";
+      actions.insertBefore(lb, actions.firstChild);
+      lb.onclick = () => { renderLeaderboard(); showScreen("leaderboard"); };
+    }
   }
 }
 
@@ -279,12 +304,12 @@ function renderHome() {
 }
 
 // ---------- Làm bài ----------
-function startQuiz(mode = "practice") {
-  lastMode = mode;
-  const items = buildQuizItems({ topic: selectedTopic, level: selectedLevel, mode });
-  const minutes = mode === "exam" ? EXAM_MINUTES : QUIZ_MINUTES;
+function startQuiz(mode = "practice", examLevel = 2) {
+  lastMode = { mode, examLevel };
+  const items = buildQuizItems({ topic: selectedTopic, level: selectedLevel, mode, examLevel });
+  const minutes = mode !== "exam" ? QUIZ_MINUTES : (examLevel === 1 ? EXAM_BASIC_MINUTES : EXAM_MINUTES);
   quiz = {
-    mode, items, minutes,
+    mode, examLevel, items, minutes,
     index: 0,
     userAnswers: items.map(() => null),
     secondsLeft: minutes * 60,
@@ -633,7 +658,7 @@ function submitQuiz(auto) {
   const history = load(LS.history, []);
   history.unshift({
     date: new Date().toISOString(),
-    topic: selectedTopic, level: selectedLevel, mode: quiz.mode,
+    topic: selectedTopic, level: selectedLevel, mode: quiz.mode, examLevel: quiz.examLevel,
     score, total, stars, seconds: usedSeconds,
   });
   save(LS.history, history.slice(0, 100));
@@ -726,6 +751,51 @@ function renderProgress() {
     div.className = "weak-item";
     div.innerHTML = `${q} — <span class="w-count">sai ${n} lần</span>`;
     wl.appendChild(div);
+  });
+}
+
+// ---------- Bảng xếp hạng ----------
+function ensureLeaderboardScreen() {
+  if ($("screen-leaderboard")) return;
+  const div = document.createElement("div");
+  div.id = "screen-leaderboard";
+  div.className = "screen";
+  div.innerHTML = `
+    <div class="card">
+      <h2>🏆 Bảng xếp hạng đề thi thử</h2>
+      <p class="hint">Xếp theo số câu đúng, rồi đến thời gian hoàn thành nhanh nhất.</p>
+      <div id="lb-list" class="lb-list"></div>
+      <button id="btn-home-lb" class="btn btn-secondary">🏠 Về trang chính</button>
+    </div>`;
+  document.body.appendChild(div);
+  $("btn-home-lb").onclick = () => { renderHome(); showScreen("home"); };
+}
+
+function renderLeaderboard() {
+  const history = load(LS.history, []);
+  const exams = history.filter(h => h.mode === "exam");
+  const ranked = exams.slice()
+    .sort((a, b) => (b.score - a.score) || (a.seconds - b.seconds))
+    .slice(0, 15);
+  const el = $("lb-list");
+  if (!ranked.length) {
+    el.innerHTML = `<div class="empty-note">Chưa có lượt thi thử nào. Hãy làm một đề thi thử nhé!</div>`;
+    return;
+  }
+  const medals = ["🥇", "🥈", "🥉"];
+  el.innerHTML = "";
+  ranked.forEach((h, i) => {
+    const m = Math.floor(h.seconds / 60), s = h.seconds % 60;
+    const lvl = h.examLevel === 1 ? "Cơ bản" : "Nâng cao";
+    const d = new Date(h.date);
+    const row = document.createElement("div");
+    row.className = "lb-item" + (i < 3 ? " lb-top" : "");
+    row.innerHTML = `
+      <span class="lb-rank">${medals[i] || (i + 1)}</span>
+      <span class="lb-main"><b>${h.score}/${h.total}</b> đúng · ⏱ ${m}:${String(s).padStart(2, "0")}
+        <span class="lb-lvl">${lvl}</span></span>
+      <span class="lb-date">${d.toLocaleDateString("vi-VN")}</span>`;
+    el.appendChild(row);
   });
 }
 
@@ -822,6 +892,13 @@ function ensureQuizElements() {
     pal.className = "palette";
     track.insertAdjacentElement("afterend", pal);
   }
+  if (!$("btn-submit")) {
+    const submit = document.createElement("button");
+    submit.id = "btn-submit";
+    submit.className = "btn btn-submit-top";
+    submit.textContent = "📤 Nộp bài";
+    $("palette").insertAdjacentElement("afterend", submit);
+  }
   if (!$("task-area")) {
     const div = document.createElement("div");
     div.id = "task-area";
@@ -834,20 +911,16 @@ function ensureQuizElements() {
     nav.className = "quiz-nav";
     nav.innerHTML = `
       <button id="btn-prev" class="btn btn-secondary">⬅ Câu trước</button>
-      <button id="btn-skip" class="btn btn-secondary">Bỏ qua ➜</button>
+      <button id="btn-skip" class="btn btn-secondary">Tiếp tục ➜</button>
     `;
     card.appendChild(nav);
-    const submit = document.createElement("button");
-    submit.id = "btn-submit";
-    submit.className = "btn btn-big btn-primary";
-    submit.textContent = "📤 Nộp bài";
-    card.appendChild(submit);
   }
   $("btn-next").classList.add("hidden");
 }
 
 ensureQuizElements();
 ensureHomeElements();
+ensureLeaderboardScreen();
 
 // ---------- Gắn sự kiện ----------
 $("btn-start").onclick = () => startQuiz("practice");
@@ -856,7 +929,7 @@ $("btn-prev").onclick = () => { playTap(); prevQuestion(); };
 $("btn-skip").onclick = () => { playTap(); nextQuestion(); };
 $("btn-submit").onclick = () => submitQuiz(false);
 $("btn-review").onclick = () => $("review-list").classList.toggle("hidden");
-$("btn-again").onclick = () => startQuiz(lastMode);
+$("btn-again").onclick = () => startQuiz(lastMode.mode, lastMode.examLevel);
 $("btn-home1").onclick = () => { renderHome(); showScreen("home"); };
 $("btn-home2").onclick = () => { renderHome(); showScreen("home"); };
 $("btn-home3").onclick = () => { renderHome(); showScreen("home"); };

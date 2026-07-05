@@ -204,6 +204,8 @@ body {
   background: #6a5acd; color: #fff; box-shadow: 0 4px 0 #514199; margin-bottom: 6px;
 }
 .btn-exam:hover { background: #514199; }
+.btn-exam-basic { background: #2aa9a0; box-shadow: 0 4px 0 #1f857e; }
+.btn-exam-basic:hover { background: #1f857e; }
 
 /* ---------- Đoạn văn đọc hiểu / câu tìm lỗi ---------- */
 .context-box {
@@ -236,9 +238,28 @@ body {
 .pal-num.current { outline: 3px solid var(--primary); outline-offset: 1px; color: var(--primary-dark); }
 .pal-num.done.current { color: #fff; }
 
-.quiz-nav { display: flex; gap: 10px; margin-top: 6px; }
+.quiz-nav { display: flex; gap: 10px; margin-top: 10px; }
 .quiz-nav .btn { flex: 1; }
-#btn-submit { margin-top: 10px; width: 100%; }
+.btn-submit-top {
+  width: 100%; margin: 4px 0 12px; background: var(--green); color: #fff;
+  box-shadow: 0 4px 0 #2fae5a; font-weight: 800; font-size: 1.05rem;
+  padding: 12px; border-radius: 14px; border: none; cursor: pointer;
+  font-family: inherit;
+}
+.btn-submit-top:hover { background: #2fae5a; }
+.btn-submit-top:active { transform: scale(.98); }
+
+/* Bảng xếp hạng */
+.lb-list { display: grid; gap: 8px; margin: 10px 0 16px; }
+.lb-item {
+  display: flex; align-items: center; gap: 10px; padding: 10px 12px;
+  border: 2px solid var(--border); border-radius: 12px; background: #fffdf8;
+}
+.lb-item.lb-top { background: #fff7e0; border-color: #ffe1a1; }
+.lb-rank { font-size: 1.3rem; font-weight: 800; width: 34px; text-align: center; flex-shrink: 0; }
+.lb-main { flex: 1; font-size: .98rem; }
+.lb-lvl { color: var(--muted); font-size: .85rem; }
+.lb-date { color: var(--muted); font-size: .82rem; flex-shrink: 0; }
 
 .review-title { margin: 18px 0 4px; color: var(--primary-dark); }
 .explain { color: #7a5c00; }
