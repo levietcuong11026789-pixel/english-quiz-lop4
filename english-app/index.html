@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="App học từ vựng tiếng Anh cho bé mầm non 4 tuổi">
+    <title>🌟 English For Kids — Tiếng Anh Cho Bé</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="bg-decorations">
+        <div class="cloud cloud-1">☁️</div>
+        <div class="cloud cloud-2">☁️</div>
+        <div class="cloud cloud-3">☁️</div>
+        <div class="sun">🌞</div>
+    </div>
+
+    <div id="app">
+        <!-- HOME SCREEN -->
+        <section id="home-screen" class="screen active">
+            <header class="app-header">
+                <div class="logo-area">
+                    <span class="logo-emoji">🌟</span>
+                    <h1>English For Kids</h1>
+                    <p class="subtitle">Tiếng Anh Cho Bé Yêu</p>
+                </div>
+            </header>
+            <div class="topics-grid" id="topics-grid"></div>
+        </section>
+
+        <!-- TOPIC SCREEN -->
+        <section id="topic-screen" class="screen">
+            <header class="screen-header">
+                <button class="btn-back" id="btn-back-home"><span>◀</span></button>
+                <div class="screen-title">
+                    <span class="screen-icon" id="topic-icon"></span>
+                    <h2 id="topic-title"></h2>
+                </div>
+            </header>
+            <div class="mode-selection">
+                <h3 class="mode-heading">Chọn chế độ</h3>
+                <div class="mode-cards">
+                    <button class="mode-card mode-learn" id="btn-learn">
+                        <div class="mode-icon">📖</div>
+                        <div class="mode-label">HỌC</div>
+                        <div class="mode-desc">Xem hình và học từ mới</div>
+                    </button>
+                    <button class="mode-card mode-play" id="btn-play">
+                        <div class="mode-icon">🎮</div>
+                        <div class="mode-label">CHƠI</div>
+                        <div class="mode-desc">Trả lời câu hỏi thú vị</div>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- LEARN SCREEN -->
+        <section id="learn-screen" class="screen">
+            <header class="screen-header">
+                <button class="btn-back" id="btn-back-topic-learn"><span>◀</span></button>
+                <div class="screen-title">
+                    <span class="screen-icon" id="learn-icon"></span>
+                    <h2 id="learn-title">Học từ mới</h2>
+                </div>
+                <div class="progress-info" id="learn-progress-info">1/10</div>
+            </header>
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="learn-progress-bar"></div>
+            </div>
+            <div class="flashcard-area">
+                <div class="flashcard" id="flashcard">
+                    <div class="flashcard-emoji" id="flashcard-emoji"></div>
+                    <div class="flashcard-en" id="flashcard-en"></div>
+                    <button class="btn-speak" id="btn-speak-learn" aria-label="Nghe phát âm">🔊</button>
+                    <div class="flashcard-vi" id="flashcard-vi"></div>
+                </div>
+            </div>
+            <div class="flashcard-nav">
+                <button class="btn-nav btn-prev" id="btn-prev"><span>◀</span> Trước</button>
+                <button class="btn-nav btn-next" id="btn-next">Sau <span>▶</span></button>
+            </div>
+        </section>
+
+        <!-- PLAY SCREEN -->
+        <section id="play-screen" class="screen">
+            <header class="screen-header">
+                <button class="btn-back" id="btn-back-topic-play"><span>◀</span></button>
+                <div class="screen-title">
+                    <span class="screen-icon" id="play-icon"></span>
+                    <h2 id="play-title">Chơi nào!</h2>
+                </div>
+                <div class="score-display" id="score-display">⭐ <span id="score-value">0</span></div>
+            </header>
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="play-progress-bar"></div>
+            </div>
+            <div class="quiz-area">
+                <div class="quiz-question">
+                    <div class="quiz-emoji" id="quiz-emoji"></div>
+                    <button class="btn-speak btn-speak-quiz" id="btn-speak-quiz" aria-label="Nghe phát âm">🔊 Nghe</button>
+                    <div class="quiz-prompt">Đây là gì?</div>
+                    <div class="quiz-prompt-sub">What is this?</div>
+                </div>
+                <div class="quiz-answers" id="quiz-answers"></div>
+            </div>
+            <div class="quiz-feedback hidden" id="quiz-feedback">
+                <div class="feedback-icon" id="feedback-icon"></div>
+                <div class="feedback-text" id="feedback-text"></div>
+                <button class="btn-continue" id="btn-continue">Tiếp tục ▶</button>
+            </div>
+        </section>
+
+        <!-- RESULT SCREEN -->
+        <section id="result-screen" class="screen">
+            <div class="result-content">
+                <div class="result-stars" id="result-stars"></div>
+                <h2 class="result-title" id="result-title">Giỏi lắm!</h2>
+                <div class="result-score">
+                    <span class="result-emoji">🏆</span>
+                    <p id="result-score-text"></p>
+                </div>
+                <div class="result-message" id="result-message"></div>
+                <div class="result-actions">
+                    <button class="btn-result btn-replay" id="btn-replay">🔄 Chơi lại</button>
+                    <button class="btn-result btn-home" id="btn-go-home">🏠 Về trang chủ</button>
+                </div>
+            </div>
+            <div class="confetti-container" id="confetti-container"></div>
+        </section>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

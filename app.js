@@ -89,15 +89,42 @@ function allBasicMC() {
 
 function speak(text) {
   if (!("speechSynthesis" in window) || !text) return;
-  speechSynthesis.cancel();
+  const synth = window.speechSynthesis;
+  // Chrome/Android: reset + resume() so it keeps working after the first word
+  // (the engine otherwise gets stuck "paused" and goes silent).
+  try { synth.cancel(); } catch (e) {}
+  try { synth.resume(); } catch (e) {}
   const u = new SpeechSynthesisUtterance(text);
   u.lang = "en-US";
   u.rate = 0.85;
-  const voice = speechSynthesis.getVoices().find(v => v.lang.startsWith("en"));
+  const voices = synth.getVoices();
+  const voice = voices.find(v => v.lang && v.lang.startsWith("en"));
   if (voice) u.voice = voice;
-  speechSynthesis.speak(u);
+  setTimeout(() => {
+    try { synth.speak(u); synth.resume(); } catch (e) {}
+  }, 60);
 }
-if ("speechSynthesis" in window) speechSynthesis.getVoices();
+if ("speechSynthesis" in window) {
+  speechSynthesis.getVoices();
+  // Voices load asynchronously on Android — grab them when ready.
+  speechSynthesis.onvoiceschanged = () => speechSynthesis.getVoices();
+  // Unlock the speech engine on the very first user gesture. Android/iOS
+  // block audio until a real tap; a silent utterance primes it. Use a real
+  // character (a space), never '' which errors and jams the queue.
+  const unlockSpeech = () => {
+    try {
+      speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(' ');
+      u.volume = 0;
+      speechSynthesis.speak(u);
+      speechSynthesis.resume();
+    } catch (e) { /* ignore */ }
+    document.removeEventListener("touchstart", unlockSpeech);
+    document.removeEventListener("click", unlockSpeech);
+  };
+  document.addEventListener("touchstart", unlockSpeech, { passive: true });
+  document.addEventListener("click", unlockSpeech);
+}
 
 function showScreen(name) {
   document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));

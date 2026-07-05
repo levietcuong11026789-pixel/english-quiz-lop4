@@ -1,133 +1,68 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>English Fun 4 — Trắc nghiệm Tiếng Anh lớp 4</title>
-<link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🌟 Học Cùng Bé — Tiếng Anh & Toán</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@700;800&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Nunito', system-ui, sans-serif;
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 28px; padding: 24px;
+      background: linear-gradient(160deg, #a8edea 0%, #fed6e3 100%);
+      text-align: center;
+    }
+    h1 {
+      font-family: 'Baloo 2', sans-serif;
+      font-size: clamp(28px, 6vw, 44px);
+      color: #2b2b6b; text-shadow: 0 2px 0 #fff;
+    }
+    p.sub { color: #444; font-size: clamp(15px, 3.5vw, 18px); margin-top: -12px; }
+    .cards { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; width: 100%; max-width: 720px; }
+    a.card {
+      flex: 1 1 260px; max-width: 320px;
+      text-decoration: none; color: #fff;
+      border-radius: 24px; padding: 32px 24px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.15);
+      transition: transform .15s ease, box-shadow .15s ease;
+      display: flex; flex-direction: column; align-items: center; gap: 10px;
+    }
+    a.card:active { transform: scale(.97); }
+    a.card:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(0,0,0,.22); }
+    .card .emoji { font-size: 56px; }
+    .card .title { font-family: 'Baloo 2', sans-serif; font-size: 26px; font-weight: 800; }
+    .card .desc { font-size: 15px; opacity: .95; }
+    .en  { background: linear-gradient(145deg, #ff9a9e, #f6416c); }
+    .en2 { background: linear-gradient(145deg, #43cea2, #185a9d); }
+    .math{ background: linear-gradient(145deg, #f7971e, #ffd200); color:#5a3d00; }
+    footer { color:#555; font-size:13px; margin-top:8px; }
+  </style>
 </head>
 <body>
-
-<!-- ===== MÀN HÌNH CHÍNH ===== -->
-<div id="screen-home" class="screen active">
-  <header class="home-header">
-    <h1>🌟 English Fun 4</h1>
-    <p class="subtitle">Trắc nghiệm Tiếng Anh lớp 4</p>
-    <div class="star-bar">
-      <span id="total-stars">⭐ 0</span>
-      <span id="total-quizzes">📝 0 bài</span>
-    </div>
-  </header>
-
-  <section class="card">
-    <h2>Chọn chủ đề để luyện tập</h2>
-    <div id="topic-grid" class="topic-grid"></div>
-    <button id="btn-start" class="btn btn-big btn-primary">🚀 Bắt đầu làm bài (30 câu)</button>
-    <p class="hint">⏱️ Thời gian: 20 phút cho 30 câu</p>
-  </section>
-
-  <section class="card badges-card">
-    <h2>🏅 Huy hiệu của em</h2>
-    <div id="badge-list" class="badge-list"></div>
-  </section>
-
-  <div class="home-actions">
-    <button id="btn-progress" class="btn btn-secondary">📈 Kết quả của em</button>
-    <button id="btn-admin" class="btn btn-secondary">⚙️ Quản lý câu hỏi</button>
+  <h1>🌟 Học Cùng Bé</h1>
+  <p class="sub">Chọn ứng dụng bé muốn học nhé!</p>
+  <div class="cards">
+    <a class="card en" href="./english-app/index.html">
+      <span class="emoji">🐣</span>
+      <span class="title">Tiếng Anh Cho Bé</span>
+      <span class="desc">Học từ vựng có giọng đọc (mầm non)</span>
+    </a>
+    <a class="card en2" href="./quiz.html">
+      <span class="emoji">📚</span>
+      <span class="title">English Fun 4</span>
+      <span class="desc">Trắc nghiệm tiếng Anh lớp 4</span>
+    </a>
+    <a class="card math" href="./toan3.html">
+      <span class="emoji">🔢</span>
+      <span class="title">Toán Lớp 3</span>
+      <span class="desc">Luyện toán vui</span>
+    </a>
   </div>
-
-  <a class="btn btn-big btn-math-link" href="toan3.html">🔢 Toán Vui 3 — Toán lớp 3 Kết nối tri thức ➜</a>
-</div>
-
-<!-- ===== MÀN HÌNH LÀM BÀI ===== -->
-<div id="screen-quiz" class="screen">
-  <div class="quiz-topbar">
-    <button id="btn-quit" class="btn btn-small btn-danger">✖ Thoát</button>
-    <div id="quiz-progress" class="quiz-progress">Câu 1/30</div>
-    <div id="quiz-timer" class="quiz-timer">20:00</div>
-  </div>
-  <div class="progress-track"><div id="progress-fill" class="progress-fill"></div></div>
-
-  <div class="card quiz-card">
-    <div class="question-row">
-      <div id="question-text" class="question-text"></div>
-      <button id="btn-speak" class="btn-speak" title="Nghe đọc">🔊</button>
-    </div>
-    <div id="options" class="options"></div>
-    <div id="feedback" class="feedback"></div>
-    <button id="btn-next" class="btn btn-big btn-primary hidden">Câu tiếp theo ➜</button>
-  </div>
-</div>
-
-<!-- ===== MÀN HÌNH KẾT QUẢ ===== -->
-<div id="screen-result" class="screen">
-  <div class="card result-card">
-    <h1 id="result-title">🎉 Hoàn thành!</h1>
-    <div id="result-stars" class="result-stars"></div>
-    <div id="result-score" class="result-score"></div>
-    <div id="result-time" class="result-time"></div>
-    <div id="new-badges" class="new-badges"></div>
-    <div class="result-actions">
-      <button id="btn-review" class="btn btn-secondary">🔍 Xem lại đáp án</button>
-      <button id="btn-again" class="btn btn-primary">🔄 Làm bài mới</button>
-      <button id="btn-home1" class="btn btn-secondary">🏠 Về trang chính</button>
-    </div>
-  </div>
-  <div id="review-list" class="review-list hidden"></div>
-</div>
-
-<!-- ===== MÀN HÌNH TIẾN BỘ ===== -->
-<div id="screen-progress" class="screen">
-  <div class="card">
-    <h2>📈 Kết quả của em</h2>
-    <div id="progress-summary" class="progress-summary"></div>
-    <h3>Lịch sử làm bài</h3>
-    <div id="history-list" class="history-list"></div>
-    <h3>❗ Những câu hay sai (để ôn lại)</h3>
-    <div id="weak-list" class="weak-list"></div>
-    <button id="btn-home2" class="btn btn-secondary">🏠 Về trang chính</button>
-  </div>
-</div>
-
-<!-- ===== MÀN HÌNH QUẢN LÝ CÂU HỎI ===== -->
-<div id="screen-admin" class="screen">
-  <div class="card">
-    <h2>⚙️ Quản lý câu hỏi (dành cho phụ huynh)</h2>
-    <p class="hint">Câu hỏi anh/chị thêm sẽ được trộn cùng bộ câu hỏi có sẵn khi bé làm bài.</p>
-
-    <form id="admin-form" class="admin-form">
-      <label>Chủ đề
-        <select id="f-topic"></select>
-      </label>
-      <label>Câu hỏi
-        <input id="f-q" type="text" required placeholder="VD: I ___ a student.">
-      </label>
-      <div class="option-inputs">
-        <label>Đáp án A <input id="f-o0" type="text" required></label>
-        <label>Đáp án B <input id="f-o1" type="text" required></label>
-        <label>Đáp án C <input id="f-o2" type="text" required></label>
-        <label>Đáp án D <input id="f-o3" type="text" required></label>
-      </div>
-      <label>Đáp án đúng
-        <select id="f-a">
-          <option value="0">A</option><option value="1">B</option>
-          <option value="2">C</option><option value="3">D</option>
-        </select>
-      </label>
-      <label>Câu đọc loa (tiếng Anh, bỏ trống nếu không cần)
-        <input id="f-s" type="text" placeholder="VD: I am a student.">
-      </label>
-      <button type="submit" class="btn btn-primary" id="f-submit">➕ Thêm câu hỏi</button>
-      <button type="button" class="btn btn-secondary hidden" id="f-cancel">Huỷ sửa</button>
-    </form>
-
-    <h3>Câu hỏi đã thêm (<span id="custom-count">0</span>)</h3>
-    <div id="custom-list" class="custom-list"></div>
-    <button id="btn-home3" class="btn btn-secondary">🏠 Về trang chính</button>
-  </div>
-</div>
-
-<script src="questions.js"></script>
-<script src="app.js"></script>
+  <footer>Chạm vào thẻ để mở ứng dụng • Bật loa để nghe giọng đọc</footer>
 </body>
 </html>
