@@ -190,6 +190,37 @@ body {
 .custom-item .ci-text { flex: 1; }
 .custom-item .ci-actions { display: flex; gap: 6px; flex-shrink: 0; }
 
+/* ---------- Chọn cấp độ + nút thi thử (trang chính) ---------- */
+.level-row { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+.level-label { font-weight: 700; color: var(--muted); margin-right: 4px; }
+.level-chip {
+  border: 2px solid var(--border); border-radius: 12px; background: #fffdf8;
+  padding: 8px 14px; font-weight: 700; font-size: .95rem; cursor: pointer;
+  font-family: inherit; transition: all .12s;
+}
+.level-chip:hover { transform: translateY(-2px); }
+.level-chip.selected { border-color: var(--primary); background: #fff1e0; box-shadow: 0 0 0 2px #ffd9a8; }
+.btn-exam {
+  background: #6a5acd; color: #fff; box-shadow: 0 4px 0 #514199; margin-bottom: 6px;
+}
+.btn-exam:hover { background: #514199; }
+
+/* ---------- Đoạn văn đọc hiểu / câu tìm lỗi ---------- */
+.context-box {
+  background: #f2f8ff; border: 2px solid #cfe3f7; border-radius: 12px;
+  padding: 12px 14px; font-size: 1.05rem; line-height: 1.6; margin-bottom: 12px;
+  font-weight: 600; color: #2c3e55;
+}
+.context-box.reading-box { font-weight: 500; text-align: left; }
+.q-line { font-size: 1.25rem; font-weight: 700; }
+
+/* ---------- Viết lại câu ---------- */
+.transform-orig {
+  background: #fff7e8; border: 2px solid #ffe1b0; border-radius: 12px;
+  padding: 12px 14px; font-size: 1.15rem; font-weight: 700; text-align: center;
+}
+.transform-given { text-align: center; color: var(--muted); font-weight: 600; }
+
 /* ---------- Bảng ô số câu hỏi ---------- */
 .palette {
   display: grid; grid-template-columns: repeat(10, 1fr); gap: 6px;

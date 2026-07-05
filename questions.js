@@ -267,3 +267,144 @@ const MATCH_BANK = [
   { t: "t5", pairs: [{ img: "🏊", w: "swim" }, { img: "🎤", w: "sing" }, { img: "💃", w: "dance" }, { img: "🏃", w: "run" }] },
   { t: "t10", pairs: [{ img: "🎆", w: "fireworks" }, { img: "🏮", w: "lantern" }, { img: "🏖️", w: "beach" }, { img: "⛰️", w: "mountain" }] },
 ];
+
+// Gán cấp độ mặc định: 1 = Cơ bản cho các câu/dạng đã có
+QUESTION_BANK.forEach(q => { if (q.d === undefined) q.d = 1; });
+SPELL_BANK.forEach(q => { if (q.d === undefined) q.d = 1; });
+REORDER_BANK.forEach(q => { if (q.d === undefined) q.d = 1; });
+MATCH_BANK.forEach(q => { if (q.d === undefined) q.d = 1; });
+
+// ===== NGÂN HÀNG NÂNG CAO (d:2) — phục vụ ôn thi & học sinh giỏi =====
+
+// --- Trắc nghiệm ngữ pháp/từ vựng nâng cao ---
+const ADVANCED_BANK = [
+  { t: "t9", d: 2, q: "This box is ___ than that one. (heavy)", o: ["heavy", "heavier", "heaviest", "more heavy"], a: 1, s: "This box is heavier than that one.", e: "So sánh hơn với tính từ ngắn tận cùng '-y': heavy → heavier + than." },
+  { t: "t10", d: 2, q: "Mount Everest is the ___ mountain in the world.", o: ["high", "higher", "highest", "more high"], a: 2, s: "Mount Everest is the highest mountain.", e: "So sánh nhất tính từ ngắn: the + tính từ + '-est' → the highest." },
+  { t: "t7", d: 2, q: "How ___ apples do you have?", o: ["much", "many", "old", "long"], a: 1, s: "How many apples do you have?", e: "'apples' đếm được, số nhiều → dùng 'many'." },
+  { t: "t7", d: 2, q: "How ___ water is there?", o: ["many", "much", "old", "far"], a: 1, s: "How much water is there?", e: "'water' không đếm được → dùng 'much'." },
+  { t: "t4", d: 2, q: "Look! The children ___ in the garden now.", o: ["play", "plays", "are playing", "played"], a: 2, s: "The children are playing in the garden now.", e: "'Look!' và 'now' → thì hiện tại tiếp diễn: are + V-ing." },
+  { t: "t10", d: 2, q: "Last summer we ___ to Da Nang.", o: ["go", "goes", "went", "going"], a: 2, s: "Last summer we went to Da Nang.", e: "'Last summer' là quá khứ → 'went' (quá khứ của go)." },
+  { t: "t4", d: 2, q: "She usually ___ TV in the evening.", o: ["watch", "watches", "watching", "watched"], a: 1, s: "She usually watches TV in the evening.", e: "'usually' → hiện tại đơn; 'She' ngôi 3 số ít, tận cùng -ch → watches." },
+  { t: "t3", d: 2, q: "___ is your favourite subject? — Maths.", o: ["Who", "What", "Where", "When"], a: 1, s: "What is your favourite subject?", e: "Hỏi 'cái gì' → What." },
+  { t: "t2", d: 2, q: "___ do you go to school? — At seven o'clock.", o: ["What time", "Where", "Who", "Why"], a: 0, s: "What time do you go to school?", e: "Trả lời bằng giờ → câu hỏi 'What time'." },
+  { t: "t8", d: 2, q: "___ do you like tigers? — Because they are strong.", o: ["What", "Where", "Why", "When"], a: 2, s: "Why do you like tigers?", e: "Trả lời 'Because...' → câu hỏi 'Why' (tại sao)." },
+  { t: "t6", d: 2, q: "These are my books. ___ are on the table.", o: ["It", "They", "He", "She"], a: 1, s: "They are on the table.", e: "'books' số nhiều, chỉ vật → thay bằng 'They'." },
+  { t: "t9", d: 2, q: "That is Nam. ___ bag is blue.", o: ["He", "His", "Him", "She"], a: 1, s: "His bag is blue.", e: "Tính từ sở hữu của 'he' là 'His' (của cậu ấy)." },
+  { t: "t1", d: 2, q: "I have a sister. ___ name is Hoa.", o: ["He", "His", "Her", "She"], a: 2, s: "Her name is Hoa.", e: "Tính từ sở hữu của 'she' là 'Her' (của cô ấy)." },
+  { t: "t3", d: 2, q: "There ___ some books on the desk.", o: ["is", "are", "am", "be"], a: 1, s: "There are some books on the desk.", e: "'some books' số nhiều → 'There are'." },
+  { t: "t7", d: 2, q: "There ___ some milk in the glass.", o: ["is", "are", "am", "be"], a: 0, s: "There is some milk in the glass.", e: "'milk' không đếm được → 'There is'." },
+  { t: "t5", d: 2, q: "My brother is good ___ playing football.", o: ["at", "in", "on", "for"], a: 0, s: "My brother is good at playing football.", e: "Cụm cố định 'good at' = giỏi về việc gì." },
+  { t: "t10", d: 2, q: "The cat is ___ the table. (bên trên)", o: ["on", "in", "at", "of"], a: 0, s: "The cat is on the table.", e: "'on' = ở trên bề mặt." },
+  { t: "t4", d: 2, q: "I go to school ___ bike.", o: ["by", "on", "in", "with"], a: 0, s: "I go to school by bike.", e: "Đi bằng phương tiện dùng 'by': by bike, by bus." },
+  { t: "t2", d: 2, q: "My birthday is ___ the 5th of May.", o: ["in", "on", "at", "to"], a: 1, s: "My birthday is on the 5th of May.", e: "Trước một ngày cụ thể dùng 'on'." },
+  { t: "t9", d: 2, q: "Nga sings ___ than Lan.", o: ["good", "well", "better", "best"], a: 2, s: "Nga sings better than Lan.", e: "So sánh hơn của trạng từ 'well' là 'better'." },
+  { t: "t4", d: 2, q: "They don't ___ any homework today.", o: ["has", "have", "having", "to have"], a: 1, s: "They don't have any homework today.", e: "Sau 'don't' dùng động từ nguyên thể → 'have'." },
+  { t: "t8", d: 2, q: "An elephant is bigger ___ a dog.", o: ["then", "than", "that", "as"], a: 1, s: "An elephant is bigger than a dog.", e: "So sánh hơn luôn đi với 'than' (không phải 'then')." },
+  { t: "t1", d: 2, q: "___ you speak English? — Yes, I can.", o: ["Do", "Are", "Can", "Is"], a: 2, s: "Can you speak English?", e: "Trả lời 'Yes, I can' → câu hỏi bắt đầu bằng 'Can'." },
+  { t: "t6", d: 2, q: "My mother works ___ a hospital.", o: ["in", "on", "at", "by"], a: 0, s: "My mother works in a hospital.", e: "'work in a hospital/school/factory' = làm việc ở đâu." },
+];
+
+// --- Chọn từ KHÁC LOẠI (odd one out) ---
+const ODD_BANK = [
+  { t: "t8", words: ["dog", "cat", "apple", "fish"], odd: 2, e: "'apple' là trái cây, còn lại đều là con vật." },
+  { t: "t7", words: ["milk", "water", "juice", "bread"], odd: 3, e: "'bread' là đồ ăn, còn lại là đồ uống." },
+  { t: "t3", words: ["Maths", "English", "Music", "pencil"], odd: 3, e: "'pencil' là đồ dùng, còn lại là môn học." },
+  { t: "t2", words: ["Monday", "Friday", "May", "Sunday"], odd: 2, e: "'May' là tháng, còn lại là thứ trong tuần." },
+  { t: "t9", words: ["shoes", "dress", "hat", "table"], odd: 3, e: "'table' là đồ vật, còn lại là quần áo/đồ đội đầu." },
+  { t: "t6", words: ["doctor", "nurse", "teacher", "hospital"], odd: 3, e: "'hospital' là nơi chốn, còn lại là nghề nghiệp." },
+  { t: "t1", words: ["Japan", "England", "Vietnamese", "America"], odd: 2, e: "'Vietnamese' là quốc tịch, còn lại là tên nước." },
+  { t: "t7", words: ["apple", "banana", "orange", "chicken"], odd: 3, e: "'chicken' là thịt, còn lại là trái cây." },
+  { t: "t5", words: ["swim", "sing", "dance", "book"], odd: 3, e: "'book' là danh từ, còn lại là động từ chỉ hành động." },
+  { t: "t8", words: ["lion", "tiger", "bear", "rose"], odd: 3, e: "'rose' là hoa, còn lại là con vật." },
+  { t: "t2", words: ["January", "March", "June", "Wednesday"], odd: 3, e: "'Wednesday' là thứ, còn lại là tháng." },
+  { t: "t4", words: ["read", "write", "play", "happy"], odd: 3, e: "'happy' là tính từ, còn lại là động từ." },
+  { t: "t10", words: ["beach", "mountain", "river", "milk"], odd: 3, e: "'milk' là đồ uống, còn lại là nơi chốn thiên nhiên." },
+  { t: "t3", words: ["pen", "ruler", "rubber", "run"], odd: 3, e: "'run' là động từ, còn lại là đồ dùng học tập." },
+  { t: "t9", words: ["tall", "short", "slim", "jump"], odd: 3, e: "'jump' là động từ, còn lại là tính từ tả người." },
+  { t: "t6", words: ["mother", "father", "sister", "teacher"], odd: 3, e: "'teacher' là nghề nghiệp, còn lại là thành viên gia đình." },
+  { t: "t7", words: ["hungry", "thirsty", "tired", "bread"], odd: 3, e: "'bread' là đồ ăn, còn lại là tính từ chỉ cảm giác." },
+  { t: "t5", words: ["can", "swim", "run", "jump"], odd: 0, e: "'can' là động từ khuyết thiếu, còn lại là động từ chỉ hành động." },
+  { t: "t8", words: ["big", "small", "tall", "zoo"], odd: 3, e: "'zoo' là nơi chốn, còn lại là tính từ." },
+  { t: "t2", words: ["morning", "afternoon", "evening", "yellow"], odd: 3, e: "'yellow' là màu sắc, còn lại là buổi trong ngày." },
+];
+
+// --- Tìm phần SAI trong câu (error identification) ---
+// parts: 4 phần của câu; a: chỉ số phần sai
+const ERROR_BANK = [
+  { t: "t1", parts: ["She", "are", "my", "friend."], a: 1, e: "'She' (số ít) phải đi với 'is'. Câu đúng: She is my friend." },
+  { t: "t4", parts: ["He", "get up", "at", "6 o'clock."], a: 1, e: "'He' ngôi 3 số ít → 'gets up'. Câu đúng: He gets up at 6 o'clock." },
+  { t: "t5", parts: ["I", "can", "to swim", "well."], a: 2, e: "Sau 'can' dùng động từ nguyên thể, bỏ 'to'. Câu đúng: I can swim well." },
+  { t: "t2", parts: ["My birthday", "is", "on", "May."], a: 2, e: "Trước tháng dùng 'in'. Câu đúng: My birthday is in May." },
+  { t: "t6", parts: ["There", "is", "four", "people."], a: 1, e: "'four people' số nhiều → 'are'. Câu đúng: There are four people." },
+  { t: "t7", parts: ["I", "would like", "some", "waters."], a: 3, e: "'water' không đếm được, không thêm 's'. Câu đúng: ... some water." },
+  { t: "t3", parts: ["We", "has", "English", "today."], a: 1, e: "'We' → 'have'. Câu đúng: We have English today." },
+  { t: "t8", parts: ["A bird", "can", "flies", "high."], a: 2, e: "Sau 'can' dùng nguyên thể 'fly'. Câu đúng: A bird can fly high." },
+  { t: "t9", parts: ["She", "is", "tall", "than me."], a: 2, e: "So sánh hơn → 'taller than'. Câu đúng: She is taller than me." },
+  { t: "t4", parts: ["They", "plays", "football", "every day."], a: 1, e: "'They' số nhiều → 'play'. Câu đúng: They play football every day." },
+  { t: "t7", parts: ["Do", "you", "likes", "fish?"], a: 2, e: "Sau 'Do you' dùng nguyên thể 'like'. Câu đúng: Do you like fish?" },
+  { t: "t10", parts: ["Yesterday", "I", "am", "at home."], a: 2, e: "'Yesterday' là quá khứ → 'was'. Câu đúng: Yesterday I was at home." },
+  { t: "t6", parts: ["My father", "is", "a", "teachers."], a: 3, e: "Số ít 'a teacher', không thêm 's'. Câu đúng: My father is a teacher." },
+  { t: "t3", parts: ["I", "have", "Maths", "in Monday."], a: 3, e: "Trước thứ dùng 'on': on Monday. Câu đúng: I have Maths on Monday." },
+  { t: "t5", parts: ["Can", "your sister", "cooks", "dinner?"], a: 2, e: "Sau 'Can + chủ ngữ' dùng nguyên thể 'cook'. Câu đúng: Can your sister cook dinner?" },
+  { t: "t8", parts: ["I", "don't", "likes", "snakes."], a: 2, e: "Sau 'don't' dùng nguyên thể 'like'. Câu đúng: I don't like snakes." },
+];
+
+// --- Viết lại câu (sentence transformation) ---
+// original: câu gốc; given: gợi ý bắt đầu (có thể trống); answer: đáp án; accept: các cách chấp nhận
+const TRANSFORM_BANK = [
+  { t: "t5", original: "She can swim.", prompt: "Viết lại ở dạng PHỦ ĐỊNH:", answer: "She can't swim.", accept: ["she can't swim", "she cannot swim", "she can not swim"], e: "Phủ định của 'can' là 'can't' (cannot)." },
+  { t: "t7", original: "I like apples.", prompt: "Viết lại ở dạng PHỦ ĐỊNH:", answer: "I don't like apples.", accept: ["i don't like apples", "i do not like apples"], e: "Phủ định hiện tại đơn với 'I' dùng 'don't + động từ'." },
+  { t: "t4", original: "He plays football.", prompt: "Viết lại ở dạng PHỦ ĐỊNH:", answer: "He doesn't play football.", accept: ["he doesn't play football", "he does not play football"], e: "Ngôi 3 số ít phủ định dùng 'doesn't + động từ nguyên thể'." },
+  { t: "t1", original: "You are from Vietnam.", prompt: "Viết lại thành CÂU HỎI:", answer: "Are you from Vietnam?", accept: ["are you from vietnam"], e: "Đưa 'are' lên đầu câu để tạo câu hỏi." },
+  { t: "t5", original: "She can dance.", prompt: "Viết lại thành CÂU HỎI:", answer: "Can she dance?", accept: ["can she dance"], e: "Đưa 'can' lên đầu câu để tạo câu hỏi." },
+  { t: "t8", original: "An elephant is big. A mouse is small.", prompt: "Nối thành câu SO SÁNH:", given: "An elephant is ___ a mouse.", answer: "An elephant is bigger than a mouse.", accept: ["an elephant is bigger than a mouse"], e: "big → bigger than (to hơn)." },
+  { t: "t6", original: "Nam is 10 years old. Mai is 8 years old.", prompt: "Viết câu SO SÁNH dùng 'older':", answer: "Nam is older than Mai.", accept: ["nam is older than mai"], e: "Nhiều tuổi hơn = older than." },
+  { t: "t8", original: "This is a book.", prompt: "Chuyển sang SỐ NHIỀU:", answer: "These are books.", accept: ["these are books"], e: "this → these, is → are, book → books." },
+  { t: "t8", original: "It is a cat.", prompt: "Chuyển sang SỐ NHIỀU:", answer: "They are cats.", accept: ["they are cats"], e: "it → they, is → are, cat → cats." },
+  { t: "t9", original: "This book belongs to Mai.", prompt: "Viết lại dùng sở hữu ('s):", given: "This is ___ book.", answer: "This is Mai's book.", accept: ["this is mai's book"], e: "Sở hữu dùng 's: Mai's book (sách của Mai)." },
+  { t: "t4", original: "I go to school every day.", prompt: "Viết lại ở dạng PHỦ ĐỊNH:", answer: "I don't go to school every day.", accept: ["i don't go to school every day", "i do not go to school every day"], e: "Phủ định với 'I' dùng 'don't + động từ'." },
+  { t: "t3", original: "They are students.", prompt: "Viết lại thành CÂU HỎI:", answer: "Are they students?", accept: ["are they students"], e: "Đưa 'are' lên đầu câu." },
+  { t: "t5", original: "He can play the piano.", prompt: "Viết lại ở dạng PHỦ ĐỊNH:", answer: "He can't play the piano.", accept: ["he can't play the piano", "he cannot play the piano"], e: "Phủ định của 'can' là 'can't'." },
+  { t: "t9", original: "Lan is shorter than Hoa.", prompt: "Viết lại dùng 'taller':", given: "Hoa is ___ than Lan.", answer: "Hoa is taller than Lan.", accept: ["hoa is taller than lan"], e: "Đảo chủ ngữ thì 'shorter' (thấp hơn) đổi thành 'taller' (cao hơn)." },
+];
+
+// --- Đọc hiểu (reading comprehension) — mỗi đoạn có nhiều câu hỏi ---
+const READING_BANK = [
+  {
+    t: "t6",
+    passage: "Hello. My name is Mai. I am nine years old. I am from Ha Noi. There are four people in my family: my father, my mother, my brother and me. My father is a doctor. My mother is a teacher.",
+    questions: [
+      { q: "How old is Mai?", o: ["eight", "nine", "ten", "seven"], a: 1, e: "Bài đọc: 'I am nine years old.'" },
+      { q: "Where is Mai from?", o: ["Ha Noi", "Hue", "Da Nang", "Sai Gon"], a: 0, e: "Bài đọc: 'I am from Ha Noi.'" },
+      { q: "What does Mai's father do?", o: ["teacher", "doctor", "farmer", "driver"], a: 1, e: "Bài đọc: 'My father is a doctor.'" },
+      { q: "How many people are in Mai's family?", o: ["three", "four", "five", "six"], a: 1, e: "Bài đọc: 'There are four people in my family.'" },
+    ],
+  },
+  {
+    t: "t4",
+    passage: "Tom is a pupil. Every morning, he gets up at six o'clock. He has breakfast at half past six. He goes to school at seven. In the afternoon, he plays football with his friends. In the evening, he does his homework and goes to bed at nine.",
+    questions: [
+      { q: "What time does Tom get up?", o: ["6:00", "6:30", "7:00", "9:00"], a: 0, e: "Bài đọc: 'he gets up at six o'clock.'" },
+      { q: "What does Tom do in the afternoon?", o: ["does homework", "plays football", "sleeps", "has breakfast"], a: 1, e: "Bài đọc: 'he plays football with his friends.'" },
+      { q: "When does Tom go to bed?", o: ["seven", "eight", "nine", "ten"], a: 2, e: "Bài đọc: 'goes to bed at nine.'" },
+    ],
+  },
+  {
+    t: "t8",
+    passage: "Last Sunday, Nam went to the zoo with his family. He saw many animals. He saw big elephants, tall giraffes and funny monkeys. The monkeys were eating bananas. Nam liked the monkeys best because they were very funny.",
+    questions: [
+      { q: "Where did Nam go last Sunday?", o: ["the zoo", "the beach", "school", "the park"], a: 0, e: "Bài đọc: 'Nam went to the zoo.'" },
+      { q: "What were the monkeys eating?", o: ["apples", "bananas", "bread", "rice"], a: 1, e: "Bài đọc: 'The monkeys were eating bananas.'" },
+      { q: "Which animal did Nam like best?", o: ["elephants", "giraffes", "monkeys", "lions"], a: 2, e: "Bài đọc: 'Nam liked the monkeys best.'" },
+    ],
+  },
+  {
+    t: "t10",
+    passage: "Tet is the biggest festival in Vietnam. It is in January or February. At Tet, families clean and decorate their houses. Children wear new clothes and get lucky money. People eat banh chung and watch fireworks.",
+    questions: [
+      { q: "When is Tet?", o: ["January or February", "May", "September", "December"], a: 0, e: "Bài đọc: 'It is in January or February.'" },
+      { q: "What do children get at Tet?", o: ["books", "lucky money", "toys", "pens"], a: 1, e: "Bài đọc: 'Children ... get lucky money.'" },
+      { q: "What do people watch at Tet?", o: ["films", "fireworks", "football", "TV"], a: 1, e: "Bài đọc: 'watch fireworks.'" },
+    ],
+  },
+];
