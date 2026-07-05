@@ -24,7 +24,7 @@
   <section class="card daily-card">
     <h2>🗓️ Thử thách hôm nay</h2>
     <p id="m-daily-status" class="daily-status"></p>
-    <button id="m-btn-daily" class="btn btn-big btn-daily">🔥 Làm thử thách hôm nay (12 câu)</button>
+    <button id="m-btn-daily" class="btn btn-big btn-daily">🔥 Làm thử thách hôm nay (30 câu)</button>
   </section>
 
   <section class="card">
@@ -48,13 +48,21 @@
   <section class="card">
     <h2>📚 Trắc nghiệm theo chủ đề</h2>
     <div id="m-topic-grid" class="topic-grid"></div>
-    <button id="m-btn-topic" class="btn btn-big btn-primary">🚀 Làm bài 10 câu</button>
+    <button id="m-btn-topic" class="btn btn-big btn-primary">🚀 Làm bài (30 câu)</button>
+    <p class="hint">⏱️ Thời gian: 25 phút cho 30 câu — chỉ chấm điểm khi Nộp bài</p>
+  </section>
+
+  <section class="card">
+    <h2>🎓 Thi cuối kỳ</h2>
+    <p class="hint" style="text-align:left; margin: 0 0 12px;">Đề 30 câu trộn đủ các dạng cả năm học, có cả giải toán có lời văn — giống đề thi trên lớp.</p>
+    <button id="m-btn-exam-basic" class="btn btn-big btn-exam btn-exam-basic">📝 Thi cuối kỳ — Đề cơ bản (30 phút)</button>
+    <button id="m-btn-exam-adv" class="btn btn-big btn-exam">📝 Thi cuối kỳ — Đề nâng cao (35 phút)</button>
   </section>
 
   <section class="card">
     <h2>🧩 Đố vui logic</h2>
     <p class="hint" style="text-align:left; margin: 0 0 12px;">Dãy số tìm quy luật, câu đố mẹo, bài toán tư duy — thử tài thám tử nhí! 🕵️</p>
-    <button id="m-btn-logic" class="btn btn-big btn-logic">🧠 Thử tài logic (10 câu)</button>
+    <button id="m-btn-logic" class="btn btn-big btn-logic">🧠 Thử tài logic (30 câu)</button>
   </section>
 
   <section class="card badges-card">
@@ -68,20 +76,25 @@
   </div>
 </div>
 
-<!-- ===== MÀN HÌNH TRẮC NGHIỆM (chủ đề / logic / hằng ngày) ===== -->
+<!-- ===== MÀN HÌNH LÀM BÀI (chủ đề / logic / hằng ngày / thi cuối kỳ) ===== -->
 <div id="screen-quiz" class="screen">
   <div class="quiz-topbar">
     <button id="mq-quit" class="btn btn-small btn-danger">✖ Thoát</button>
-    <div id="mq-label" class="quiz-progress"></div>
-    <div id="mq-progress" class="quiz-timer">Câu 1/10</div>
+    <div id="mq-progress" class="quiz-progress">Câu 1/30</div>
+    <div id="mq-timer" class="quiz-timer">25:00</div>
   </div>
   <div class="progress-track"><div id="mq-fill" class="progress-fill"></div></div>
+  <div id="mq-palette" class="palette"></div>
+  <button id="mq-submit" class="btn-submit-top">📤 Nộp bài</button>
 
   <div class="card quiz-card">
+    <div id="mq-label" class="quiz-mode-label"></div>
     <div id="mq-question" class="question-text math-question"></div>
     <div id="mq-options" class="options"></div>
-    <div id="mq-feedback" class="feedback"></div>
-    <button id="mq-next" class="btn btn-big btn-primary hidden">Câu tiếp theo ➜</button>
+    <div class="quiz-nav">
+      <button id="mq-prev" class="btn btn-secondary">⬅ Câu trước</button>
+      <button id="mq-next" class="btn btn-secondary">Tiếp tục ➜</button>
+    </div>
   </div>
 </div>
 

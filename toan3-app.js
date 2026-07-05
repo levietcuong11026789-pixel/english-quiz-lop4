@@ -433,6 +433,41 @@ function gWordProblem() {
     e: `1/${k} của ${a} là: ${a} : ${k} = ${q2} (kg).` };
 }
 
+// Toán đố 2 bước tính (dạng nâng cao)
+function gWordProblem2() {
+  const kind = pick(["gapca", "chiadeu", "tralai", "conlai", "ngan"]);
+  if (kind === "gapca") {
+    const a = ri(5, 20), k = ri(2, 4), ans = a + a * k;
+    return { t: "toando", q: `Túi thứ nhất đựng ${a}kg gạo, túi thứ hai đựng gấp ${k} lần túi thứ nhất. Hỏi CẢ HAI túi đựng bao nhiêu ki-lô-gam gạo?`,
+      ...makeOptions(ans, [a * k, ans + a, ans - a], x => `${x}kg`),
+      e: `Túi thứ hai: ${a} × ${k} = ${a * k} (kg). Cả hai túi: ${a} + ${a * k} = ${ans} (kg).` };
+  }
+  if (kind === "chiadeu") {
+    const c = ri(2, 6), q2 = ri(3, 9), total = c * q2, a = ri(2, total - 2), b = total - a;
+    return { t: "toando", q: `Lớp 3A có ${a} bạn nam và ${b} bạn nữ, chia đều thành ${c} nhóm. Hỏi mỗi nhóm có mấy bạn?`,
+      ...makeOptions(q2, [q2 + 1, q2 - 1, total - c], x => `${x} bạn`),
+      e: `Cả lớp có: ${a} + ${b} = ${total} (bạn). Mỗi nhóm có: ${total} : ${c} = ${q2} (bạn).` };
+  }
+  if (kind === "tralai") {
+    const n = ri(2, 4), p = ri(3, 9) * 1000, paid = pick([20, 50]) * 1000;
+    if (n * p >= paid) return gWordProblem2();
+    const ans = paid - n * p;
+    return { t: "toando", q: `Em mua ${n} quyển vở, mỗi quyển giá ${fmt(p)} đồng. Em đưa cô bán hàng tờ ${fmt(paid)} đồng. Cô trả lại em bao nhiêu tiền?`,
+      ...makeOptions(ans, [ans + 1000, ans - 1000, n * p], x => `${fmt(x)} đồng`),
+      e: `Số tiền mua vở: ${fmt(p)} × ${n} = ${fmt(n * p)} (đồng). Cô trả lại: ${fmt(paid)} − ${fmt(n * p)} = ${fmt(ans)} (đồng).` };
+  }
+  if (kind === "conlai") {
+    const k = pick([2, 3, 4, 5]), part = ri(5, 15), a = k * part, ans = a - part;
+    return { t: "toando", q: `Cửa hàng có ${a}kg đường, đã bán 1/${k} số đường đó. Hỏi cửa hàng CÒN LẠI bao nhiêu ki-lô-gam đường?`,
+      ...makeOptions(ans, [part, ans + k, ans - k], x => `${x}kg`),
+      e: `Đã bán: ${a} : ${k} = ${part} (kg). Còn lại: ${a} − ${part} = ${ans} (kg).` };
+  }
+  const a = ri(20, 60), k = ri(5, 15), ans = a + (a - k);
+  return { t: "toando", q: `Đoạn dây thứ nhất dài ${a}m, đoạn dây thứ hai ngắn hơn đoạn thứ nhất ${k}m. Hỏi cả hai đoạn dây dài bao nhiêu mét?`,
+    ...makeOptions(ans, [a - k, ans + k, a + k], x => `${x}m`),
+    e: `Đoạn thứ hai: ${a} − ${k} = ${a - k} (m). Cả hai đoạn: ${a} + ${a - k} = ${ans} (m).` };
+}
+
 // Dãy số tìm quy luật (cho phần logic)
 function gSequence() {
   const kind = pick(["arith", "arithDown", "double", "mulstep"]);
@@ -516,11 +551,11 @@ function buildTopicQuiz(topic, n) {
   const usedQs = new Set();
   let items = [];
   if (topic === "all") {
-    items = genUnique(ALL_GENS, n - 3, usedQs).concat(pickCurated(ALL_BANKS(), 3));
+    items = genUnique(ALL_GENS, n - 6, usedQs).concat(pickCurated(ALL_BANKS(), 6));
   } else if (topic === "logic") {
-    const curated = pickCurated(MLOGIC_BANK, Math.min(6, n));
+    const curated = pickCurated(MLOGIC_BANK, Math.min(12, n));
     curated.forEach(c => usedQs.add(c.q));
-    items = curated.concat(genUnique([gSequence], n - curated.length, usedQs));
+    items = curated.concat(genUnique([gSequence, gSequence, gWordProblem2], n - curated.length, usedQs));
   } else {
     const bank = MBANKS[topic] ? MBANKS[topic]() : null;
     const nCurated = bank ? Math.min(Math.ceil(n / 2), bank.length) : 0;
@@ -536,12 +571,32 @@ function buildDailyQuiz(dateStr, n) {
   for (const ch of dateStr) seed = (seed * 31 + ch.charCodeAt(0)) >>> 0;
   RNG = mulberry32(seed);
   const usedQs = new Set();
-  const gens = genUnique(ALL_GENS.concat([gSequence]), n - 4, usedQs);
+  const gens = genUnique(ALL_GENS.concat([gSequence, gWordProblem2]), n - 6, usedQs);
   const curatedPool = mshuffle(ALL_BANKS().concat(MLOGIC_BANK));
-  const curated = curatedPool.slice(0, 4).map(c => ({ ...c }));
+  const curated = curatedPool.slice(0, 6).map(c => ({ ...c }));
   const items = mshuffle(gens.concat(curated)).slice(0, n);
   RNG = Math.random;
   return items;
+}
+
+// Đề thi cuối kỳ: trộn đủ dạng, có toán đố lời văn
+function buildExamQuiz(level, n) {
+  const usedQs = new Set();
+  let items;
+  if (level === 2) {
+    // Nâng cao: biểu thức, tìm x, gấp giảm, chu vi diện tích, toán đố 2 bước, dãy số, logic
+    items = genUnique(
+      [gMulDivBig, gBieuThuc, gTimX, gGapGiam, gPeriArea, gSequence, gWordProblem2, gWordProblem2, gAddSub, gSoSanh, gMoney, gConvert],
+      n - 6, usedQs);
+    items = items.concat(pickCurated(MTOANDO_BANK, 3), pickCurated(MLOGIC_BANK, 3));
+  } else {
+    // Cơ bản: cộng trừ, bảng nhân chia, số, đồng hồ, đo lường, tiền, toán đố 1 bước
+    items = genUnique(
+      [gAddSub, gMulTable, gMulTable, gSoSanh, gClock, gConvert, gMoney, gWordProblem, gWordProblem],
+      n - 8, usedQs);
+    items = items.concat(pickCurated(ALL_BANKS(), 8));
+  }
+  return mshuffle(items).slice(0, n);
 }
 
 // ========== HUY HIỆU ==========
@@ -551,6 +606,7 @@ const MBADGES = [
   { id: "mperfect",icon: "🏆", name: "Đúng hết cả bài",      check: (s) => s.history.some(h => h.score === h.total) },
   { id: "mfive",   icon: "🔥", name: "Hoàn thành 5 bài",     check: (s) => s.history.length >= 5 },
   { id: "mten",    icon: "💎", name: "Hoàn thành 10 bài",    check: (s) => s.history.length >= 10 },
+  { id: "mexam",   icon: "🎓", name: "Hoàn thành thi cuối kỳ", check: (s) => s.history.some(h => h.mode === "exam") },
   { id: "mdrill",  icon: "⚡", name: "150 điểm Tính nhanh",  check: (s) => s.bestDrill >= 150 },
   { id: "mdaily3", icon: "🗓️", name: "3 ngày thử thách liền", check: (s) => s.dailyStreak >= 3 },
   { id: "mlogic",  icon: "🧠", name: "Vua logic (làm 3 bài logic)", check: (s) => s.history.filter(h => h.topic === "logic").length >= 3 },
@@ -631,91 +687,109 @@ function renderHome() {
   });
 }
 
-// ---------- Trắc nghiệm (phản hồi ngay từng câu) ----------
+// ---------- Bài làm kiểu bài thi (giống English Fun 4) ----------
+// Bé làm tự do: bỏ qua, quay lại, đổi đáp án thoải mái qua bảng ô số.
+// Chỉ khi NỘP BÀI mới chấm điểm và hiện bảng đáp án kèm giải thích.
+const MQUIZ_SIZE = 30;           // số câu mỗi lượt
+const MQUIZ_MINUTES = 25;        // luyện tập / logic / thử thách ngày
+const MEXAM_BASIC_MINUTES = 30;  // thi cuối kỳ đề cơ bản
+const MEXAM_ADV_MINUTES = 35;    // thi cuối kỳ đề nâng cao
+
 const mState = { topic: "all" };
 let mQuiz = null;
+let mLastMode = { mode: "practice", examLevel: 1 };
 
-function startQuiz(mode) {
-  let items, label;
+function startQuiz(mode, examLevel = 1) {
+  mLastMode = { mode, examLevel };
+  let items, label, minutes = MQUIZ_MINUTES;
   if (mode === "daily") {
-    items = buildDailyQuiz(todayStr(), 12);
+    items = buildDailyQuiz(todayStr(), MQUIZ_SIZE);
     label = "🗓️ Thử thách hôm nay";
   } else if (mode === "logic") {
-    items = buildTopicQuiz("logic", 10);
+    items = buildTopicQuiz("logic", MQUIZ_SIZE);
     label = "🧩 Đố vui logic";
+  } else if (mode === "exam") {
+    items = buildExamQuiz(examLevel, MQUIZ_SIZE);
+    label = examLevel === 2 ? "🎓 Thi cuối kỳ — Đề nâng cao" : "🎓 Thi cuối kỳ — Đề cơ bản";
+    minutes = examLevel === 2 ? MEXAM_ADV_MINUTES : MEXAM_BASIC_MINUTES;
   } else {
-    items = buildTopicQuiz(mState.topic, 10);
+    items = buildTopicQuiz(mState.topic, MQUIZ_SIZE);
     label = mState.topic === "all" ? "🎲 Tổng hợp" : `${MTOPICS[mState.topic].icon} ${MTOPICS[mState.topic].name}`;
   }
   if (!items.length) return;
-  mQuiz = { mode, label, items, index: 0, score: 0, wrongs: [], answered: false, startedAt: Date.now() };
+  mQuiz = {
+    mode, examLevel, label, items,
+    index: 0,
+    userAnswers: items.map(() => null),
+    secondsLeft: minutes * 60,
+    minutes,
+    startedAt: Date.now(),
+    timerId: setInterval(mTick, 1000),
+  };
   $("mq-label").textContent = label;
   showScreen("quiz");
+  renderQuizTimer();
   renderQuizQuestion();
+}
+
+function mTick() {
+  mQuiz.secondsLeft--;
+  renderQuizTimer();
+  if (mQuiz.secondsLeft <= 0) submitMQuiz(true);
+}
+
+function renderQuizTimer() {
+  const m = Math.floor(Math.max(mQuiz.secondsLeft, 0) / 60);
+  const s = Math.max(mQuiz.secondsLeft, 0) % 60;
+  const el = $("mq-timer");
+  el.textContent = `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+  el.classList.toggle("warning", mQuiz.secondsLeft <= 60);
+}
+
+function answeredCount() {
+  return mQuiz.userAnswers.filter(a => a !== null).length;
+}
+
+function renderQuizPalette() {
+  const pal = $("mq-palette");
+  pal.innerHTML = "";
+  mQuiz.items.forEach((_, i) => {
+    const b = document.createElement("button");
+    b.className = "pal-num"
+      + (mQuiz.userAnswers[i] !== null ? " done" : "")
+      + (i === mQuiz.index ? " current" : "");
+    b.textContent = i + 1;
+    b.onclick = () => { playTap(); mQuiz.index = i; renderQuizQuestion(); };
+    pal.appendChild(b);
+  });
+  $("mq-fill").style.width = `${(answeredCount() / mQuiz.items.length) * 100}%`;
 }
 
 function renderQuizQuestion() {
   const it = mQuiz.items[mQuiz.index];
-  mQuiz.answered = false;
   $("mq-progress").textContent = `Câu ${mQuiz.index + 1}/${mQuiz.items.length}`;
-  $("mq-fill").style.width = `${(mQuiz.index / mQuiz.items.length) * 100}%`;
   $("mq-question").innerHTML = it.q;
-  $("mq-feedback").className = "feedback";
-  $("mq-feedback").innerHTML = "";
-  $("mq-next").classList.add("hidden");
+  $("mq-prev").disabled = mQuiz.index === 0;
+  renderQuizPalette();
   const box = $("mq-options");
   box.innerHTML = "";
   const letters = ["A", "B", "C", "D"];
-  it.options = it.o;
   it.o.forEach((opt, i) => {
     const btn = document.createElement("button");
-    btn.className = "option";
+    btn.className = "option" + (mQuiz.userAnswers[mQuiz.index] === i ? " selected" : "");
     btn.innerHTML = `<span class="letter">${letters[i]}</span><span>${opt}</span>`;
-    btn.onclick = () => answerQuiz(i, btn);
+    btn.onclick = () => {
+      playTap();
+      mQuiz.userAnswers[mQuiz.index] = i;
+      [...box.children].forEach((b, j) => b.classList.toggle("selected", j === i));
+      renderQuizPalette();
+    };
     box.appendChild(btn);
   });
 }
 
-function answerQuiz(i, btn) {
-  if (mQuiz.answered) return;
-  mQuiz.answered = true;
-  const it = mQuiz.items[mQuiz.index];
-  const correct = i === it.a;
-  const box = $("mq-options");
-  [...box.children].forEach((b, j) => {
-    b.disabled = true;
-    if (j === it.a) b.classList.add("correct");
-    else if (j === i) b.classList.add("wrong");
-  });
-  const fb = $("mq-feedback");
-  if (correct) {
-    playCorrect();
-    mQuiz.score++;
-    fb.className = "feedback good";
-    fb.innerHTML = pick(["🎉 Đúng rồi, giỏi quá!", "👍 Chính xác!", "🌟 Tuyệt vời!", "💪 Quá đỉnh!"]);
-  } else {
-    playWrong();
-    mQuiz.wrongs.push(it);
-    const wrong = mload(MLS.wrongCounts, {});
-    const key = it.q.replace(/<[^>]*>/g, " ").trim().slice(0, 80);
-    wrong[key] = (wrong[key] || 0) + 1;
-    msave(MLS.wrongCounts, wrong);
-    fb.className = "feedback bad";
-    fb.innerHTML = `❌ Chưa đúng. Đáp án đúng: <b>${it.o[it.a]}</b><br>💡 ${it.e || ""}`;
-  }
-  $("mq-next").textContent = mQuiz.index + 1 < mQuiz.items.length ? "Câu tiếp theo ➜" : "Xem kết quả 🎉";
-  $("mq-next").classList.remove("hidden");
-}
-
-function nextQuizQuestion() {
-  playTap();
-  if (mQuiz.index + 1 < mQuiz.items.length) {
-    mQuiz.index++;
-    renderQuizQuestion();
-  } else {
-    finishQuiz();
-  }
-}
+function nextQuizQuestion() { mQuiz.index = (mQuiz.index + 1) % mQuiz.items.length; renderQuizQuestion(); }
+function prevQuizQuestion() { if (mQuiz.index > 0) { mQuiz.index--; renderQuizQuestion(); } }
 
 function starsFor(score, total) {
   const pct = score / total;
@@ -725,14 +799,39 @@ function starsFor(score, total) {
   return 0;
 }
 
-function finishQuiz() {
-  const { score, items, mode, label } = mQuiz;
+function submitMQuiz(auto) {
+  if (!mQuiz) return;
+  const unanswered = mQuiz.items.length - answeredCount();
+  if (!auto) {
+    const msg = unanswered > 0
+      ? `Em còn ${unanswered} câu chưa làm. Em chắc chắn muốn nộp bài chứ?`
+      : "Em chắc chắn muốn nộp bài chứ?";
+    if (!confirm(msg)) return;
+  }
+  clearInterval(mQuiz.timerId);
+
+  const { items, mode, label } = mQuiz;
   const total = items.length;
+  const results = items.map((it, i) => {
+    const ua = mQuiz.userAnswers[i];
+    return { answered: ua !== null, correct: ua === it.a, ua };
+  });
+  const score = results.filter(r => r.correct).length;
   const stars = starsFor(score, total);
-  const seconds = Math.round((Date.now() - mQuiz.startedAt) / 1000);
+  const seconds = Math.min(mQuiz.minutes * 60, Math.round((Date.now() - mQuiz.startedAt) / 1000));
+
+  const wrong = mload(MLS.wrongCounts, {});
+  results.forEach((r, i) => {
+    if (r.answered && !r.correct) {
+      const key = items[i].q.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim().slice(0, 80);
+      wrong[key] = (wrong[key] || 0) + 1;
+    }
+  });
+  msave(MLS.wrongCounts, wrong);
 
   const history = mload(MLS.history, []);
-  history.unshift({ date: new Date().toISOString(), topic: mode === "practice" ? mState.topic : mode, label, score, total, stars, seconds });
+  history.unshift({ date: new Date().toISOString(), mode, examLevel: mQuiz.examLevel,
+    topic: mode === "practice" ? mState.topic : mode, label, score, total, stars, seconds });
   msave(MLS.history, history.slice(0, 100));
 
   if (mode === "daily") {
@@ -745,27 +844,38 @@ function finishQuiz() {
   const newOnes = checkNewBadges();
   playFanfare();
 
-  $("mr-title").textContent = stars >= 2 ? "🎉 Hoàn thành!" : "💪 Cố lên nhé!";
+  $("mr-title").textContent = auto ? "⏰ Hết giờ!"
+    : mode === "exam" ? "🎓 Nộp bài thi!"
+    : (stars >= 2 ? "🎉 Hoàn thành!" : "💪 Cố lên nhé!");
   $("mr-stars").textContent = stars > 0 ? "⭐".repeat(stars) : "🌱";
   $("mr-score").textContent = `Em đúng ${score}/${total} câu — ${label}`;
   const m = Math.floor(seconds / 60), s = seconds % 60;
-  $("mr-time").textContent = `Thời gian: ${m} phút ${s} giây`;
+  $("mr-time").textContent = `Thời gian làm bài: ${m} phút ${s} giây`;
   $("mr-badges").textContent = newOnes.length
     ? "Huy hiệu mới: " + newOnes.map(b => `${b.icon} ${b.name}`).join(", ") : "";
 
   const list = $("mr-review");
-  if (mQuiz.wrongs.length) {
-    list.innerHTML = `<h3 class="review-title">📋 Những câu cần ôn lại</h3>`;
-    mQuiz.wrongs.forEach(it => {
-      const div = document.createElement("div");
-      div.className = "review-item wrong-item";
-      div.innerHTML = `<div class="rq">${it.q}</div>
-        <div class="ra">Đáp án đúng: <span class="good-ans">${it.o[it.a]}</span><br>💡 <span class="explain">${it.e || ""}</span></div>`;
-      list.appendChild(div);
-    });
-  } else {
-    list.innerHTML = `<div class="review-item"><div class="ra">🏆 Em làm đúng hết, không có câu nào cần ôn lại!</div></div>`;
-  }
+  list.innerHTML = `<h3 class="review-title">📋 Bảng đáp án chi tiết</h3>`;
+  items.forEach((it, i) => {
+    const r = results[i];
+    const div = document.createElement("div");
+    div.className = "review-item" + (r.correct ? "" : " wrong-item");
+    let html = `<div class="rq">${i + 1}. ${it.q}</div>`;
+    if (r.correct) {
+      html += `<div class="ra">✅ Em làm đúng: <span class="good-ans">${it.o[it.a]}</span></div>`;
+    } else if (r.answered) {
+      html += `<div class="ra">❌ Em chọn: <span class="bad-ans">${it.o[r.ua]}</span><br>`
+        + `Đáp án đúng: <span class="good-ans">${it.o[it.a]}</span><br>`
+        + `💡 <span class="explain">${it.e || ""}</span></div>`;
+    } else {
+      html += `<div class="ra">⏳ Em chưa làm câu này.<br>`
+        + `Đáp án đúng: <span class="good-ans">${it.o[it.a]}</span><br>`
+        + `💡 <span class="explain">${it.e || ""}</span></div>`;
+    }
+    div.innerHTML = html;
+    list.appendChild(div);
+  });
+  mQuiz = null;
   showScreen("result");
 }
 
@@ -929,13 +1039,18 @@ $("m-btn-drill").onclick = () => startDrill();
 $("m-btn-topic").onclick = () => startQuiz("practice");
 $("m-btn-logic").onclick = () => startQuiz("logic");
 $("m-btn-daily").onclick = () => startQuiz("daily");
-$("mq-next").onclick = nextQuizQuestion;
+$("m-btn-exam-basic").onclick = () => startQuiz("exam", 1);
+$("m-btn-exam-adv").onclick = () => startQuiz("exam", 2);
+$("mq-next").onclick = () => { playTap(); nextQuizQuestion(); };
+$("mq-prev").onclick = () => { playTap(); prevQuizQuestion(); };
+$("mq-submit").onclick = () => submitMQuiz(false);
 $("mq-quit").onclick = () => {
   if (!confirm("Em có chắc muốn thoát không? Bài làm sẽ không được lưu.")) return;
+  if (mQuiz) clearInterval(mQuiz.timerId);
   mQuiz = null; renderHome(); showScreen("home");
 };
 $("md-quit").onclick = quitDrill;
-$("mr-again").onclick = () => startQuiz(mQuiz ? mQuiz.mode : "practice");
+$("mr-again").onclick = () => startQuiz(mLastMode.mode, mLastMode.examLevel);
 $("mr-home").onclick = () => { renderHome(); showScreen("home"); };
 $("mdr-again").onclick = () => startDrill();
 $("mdr-home").onclick = () => { renderHome(); showScreen("home"); };

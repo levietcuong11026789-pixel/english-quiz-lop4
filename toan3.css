@@ -31,6 +31,11 @@ body.math-theme {
   border-color: #6a7dff; background: #eef1ff; box-shadow: 0 0 0 2px #c9d6ff;
 }
 
+.quiz-mode-label {
+  text-align: center; font-weight: 700; color: var(--muted);
+  font-size: .95rem; margin-bottom: 10px;
+}
+
 /* Câu hỏi toán */
 .math-question { margin-bottom: 18px; text-align: center; }
 .math-question .q-line { margin-top: 8px; }
