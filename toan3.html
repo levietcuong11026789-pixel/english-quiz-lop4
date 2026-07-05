@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Toán Vui 3 — Toán lớp 3 Kết nối tri thức</title>
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="toan3.css">
+</head>
+<body class="math-theme">
+
+<!-- ===== MÀN HÌNH CHÍNH ===== -->
+<div id="screen-home" class="screen active">
+  <header class="home-header">
+    <h1>🔢 Toán Vui 3</h1>
+    <p class="subtitle">Toán lớp 3 — Kết nối tri thức với cuộc sống</p>
+    <div class="star-bar">
+      <span id="m-total-stars">⭐ 0</span>
+      <span id="m-total-quizzes">📝 0 bài</span>
+      <span id="m-best-drill">⚡ 0</span>
+    </div>
+  </header>
+
+  <section class="card daily-card">
+    <h2>🗓️ Thử thách hôm nay</h2>
+    <p id="m-daily-status" class="daily-status"></p>
+    <button id="m-btn-daily" class="btn btn-big btn-daily">🔥 Làm thử thách hôm nay (12 câu)</button>
+  </section>
+
+  <section class="card">
+    <h2>⚡ Tính nhanh — rèn phản xạ</h2>
+    <div class="chip-row">
+      <span class="level-label">Phép tính:</span>
+      <button class="op-chip" data-op="addsub">➕➖ Cộng trừ</button>
+      <button class="op-chip" data-op="muldiv">✖️➗ Nhân chia</button>
+      <button class="op-chip selected" data-op="mix">🎲 Hỗn hợp</button>
+    </div>
+    <div class="chip-row">
+      <span class="level-label">Thời gian:</span>
+      <button class="time-chip selected" data-secs="60">1 phút</button>
+      <button class="time-chip" data-secs="90">1,5 phút</button>
+      <button class="time-chip" data-secs="120">2 phút</button>
+    </div>
+    <button id="m-btn-drill" class="btn btn-big btn-primary">⚡ Bắt đầu tính nhanh!</button>
+    <p class="hint">Trả lời đúng liên tiếp từ 3 câu sẽ được cộng điểm 🔥 combo!</p>
+  </section>
+
+  <section class="card">
+    <h2>📚 Trắc nghiệm theo chủ đề</h2>
+    <div id="m-topic-grid" class="topic-grid"></div>
+    <button id="m-btn-topic" class="btn btn-big btn-primary">🚀 Làm bài 10 câu</button>
+  </section>
+
+  <section class="card">
+    <h2>🧩 Đố vui logic</h2>
+    <p class="hint" style="text-align:left; margin: 0 0 12px;">Dãy số tìm quy luật, câu đố mẹo, bài toán tư duy — thử tài thám tử nhí! 🕵️</p>
+    <button id="m-btn-logic" class="btn btn-big btn-logic">🧠 Thử tài logic (10 câu)</button>
+  </section>
+
+  <section class="card badges-card">
+    <h2>🏅 Huy hiệu của em</h2>
+    <div id="m-badge-list" class="badge-list"></div>
+  </section>
+
+  <div class="home-actions">
+    <button id="m-btn-progress" class="btn btn-secondary">📈 Kết quả của em</button>
+    <a class="btn btn-secondary btn-link" href="index.html">🌟 English Fun 4</a>
+  </div>
+</div>
+
+<!-- ===== MÀN HÌNH TRẮC NGHIỆM (chủ đề / logic / hằng ngày) ===== -->
+<div id="screen-quiz" class="screen">
+  <div class="quiz-topbar">
+    <button id="mq-quit" class="btn btn-small btn-danger">✖ Thoát</button>
+    <div id="mq-label" class="quiz-progress"></div>
+    <div id="mq-progress" class="quiz-timer">Câu 1/10</div>
+  </div>
+  <div class="progress-track"><div id="mq-fill" class="progress-fill"></div></div>
+
+  <div class="card quiz-card">
+    <div id="mq-question" class="question-text math-question"></div>
+    <div id="mq-options" class="options"></div>
+    <div id="mq-feedback" class="feedback"></div>
+    <button id="mq-next" class="btn btn-big btn-primary hidden">Câu tiếp theo ➜</button>
+  </div>
+</div>
+
+<!-- ===== MÀN HÌNH TÍNH NHANH ===== -->
+<div id="screen-drill" class="screen">
+  <div class="quiz-topbar">
+    <button id="md-quit" class="btn btn-small btn-danger">✖ Thoát</button>
+    <div id="md-streak" class="drill-streak"></div>
+    <div id="md-score" class="quiz-progress">🏅 0</div>
+    <div id="md-timer" class="quiz-timer">⏱ 60s</div>
+  </div>
+  <div class="progress-track"><div id="md-fill" class="progress-fill drill-fill"></div></div>
+
+  <div class="card drill-card">
+    <div id="md-question" class="drill-question">3 × 4 = ?</div>
+    <div id="md-options" class="drill-options"></div>
+  </div>
+</div>
+
+<!-- ===== KẾT QUẢ TÍNH NHANH ===== -->
+<div id="screen-drillresult" class="screen">
+  <div class="card result-card">
+    <h1 id="mdr-title">⚡ Hết giờ!</h1>
+    <div id="mdr-score" class="drill-final-score">0 điểm</div>
+    <div id="mdr-detail" class="result-time"></div>
+    <div id="mdr-badges" class="new-badges"></div>
+    <div class="result-actions">
+      <button id="mdr-again" class="btn btn-primary">🔄 Chơi lại</button>
+      <button id="mdr-home" class="btn btn-secondary">🏠 Về trang chính</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== KẾT QUẢ TRẮC NGHIỆM ===== -->
+<div id="screen-result" class="screen">
+  <div class="card result-card">
+    <h1 id="mr-title">🎉 Hoàn thành!</h1>
+    <div id="mr-stars" class="result-stars"></div>
+    <div id="mr-score" class="result-score"></div>
+    <div id="mr-time" class="result-time"></div>
+    <div id="mr-badges" class="new-badges"></div>
+    <div class="result-actions">
+      <button id="mr-again" class="btn btn-primary">🔄 Làm bài mới</button>
+      <button id="mr-home" class="btn btn-secondary">🏠 Về trang chính</button>
+    </div>
+  </div>
+  <div id="mr-review" class="review-list"></div>
+</div>
+
+<!-- ===== MÀN HÌNH TIẾN BỘ ===== -->
+<div id="screen-progress" class="screen">
+  <div class="card">
+    <h2>📈 Kết quả của em</h2>
+    <div id="mp-summary" class="progress-summary"></div>
+    <h3>Lịch sử làm bài</h3>
+    <div id="mp-history" class="history-list"></div>
+    <h3>❗ Những câu hay sai (để ôn lại)</h3>
+    <div id="mp-weak" class="weak-list"></div>
+    <button id="mp-home" class="btn btn-secondary">🏠 Về trang chính</button>
+  </div>
+</div>
+
+<script src="toan3-data.js"></script>
+<script src="toan3-app.js"></script>
+</body>
+</html>

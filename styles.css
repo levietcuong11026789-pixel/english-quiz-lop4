@@ -311,6 +311,13 @@ body {
 .match-item.wrong { border-color: var(--red); background: #ffecec; }
 .match-item:disabled { cursor: default; }
 
+/* ---------- Nút sang app Toán ---------- */
+.btn-math-link {
+  display: block; text-align: center; text-decoration: none; margin: 14px 0;
+  background: #6a7dff; color: #fff; box-shadow: 0 4px 0 #4a5fd0;
+}
+.btn-math-link:hover { background: #4a5fd0; }
+
 @media (max-width: 520px) {
   .home-header h1 { font-size: 1.8rem; }
   .option-inputs { grid-template-columns: 1fr; }

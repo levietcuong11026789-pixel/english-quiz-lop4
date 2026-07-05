@@ -1,0 +1,69 @@
+/* ===== Toán Vui 3 — CSS bổ sung (dùng chung styles.css) ===== */
+
+body.math-theme {
+  background: linear-gradient(160deg, #dcecff 0%, #f3f7ff 40%, #ffeef7 100%);
+}
+.math-theme .home-header h1 { color: #4a5fd0; text-shadow: 2px 2px 0 #c9d6ff; }
+.math-theme .star-bar { color: #4a5fd0; }
+.math-theme .card h2 { color: #4a5fd0; }
+.math-theme .quiz-progress { color: #4a5fd0; }
+.math-theme .topic-chip.selected { border-color: #6a7dff; background: #eef1ff; box-shadow: 0 0 0 2px #c9d6ff; }
+.math-theme .btn-primary { background: #6a7dff; box-shadow: 0 4px 0 #4a5fd0; }
+.math-theme .btn-primary:hover { background: #4a5fd0; }
+.math-theme .progress-fill { background: linear-gradient(90deg, #6a7dff, #9db1ff); }
+
+.btn-daily { background: #ff8a3d; color: #fff; box-shadow: 0 4px 0 #f0741f; }
+.btn-daily:hover { background: #f0741f; }
+.btn-logic { background: #26bfa5; color: #fff; box-shadow: 0 4px 0 #1c9481; }
+.btn-logic:hover { background: #1c9481; }
+.btn-link { display: block; text-align: center; text-decoration: none; line-height: 1.4; }
+
+.daily-status { margin-bottom: 12px; font-size: 1rem; }
+
+.chip-row { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+.op-chip, .time-chip {
+  border: 2px solid var(--border); border-radius: 12px; background: #fffdf8;
+  padding: 8px 14px; font-weight: 700; font-size: .95rem; cursor: pointer;
+  font-family: inherit; transition: all .12s;
+}
+.op-chip:hover, .time-chip:hover { transform: translateY(-2px); }
+.op-chip.selected, .time-chip.selected {
+  border-color: #6a7dff; background: #eef1ff; box-shadow: 0 0 0 2px #c9d6ff;
+}
+
+/* Câu hỏi toán */
+.math-question { margin-bottom: 18px; text-align: center; }
+.math-question .q-line { margin-top: 8px; }
+.clock-svg { display: block; margin: 0 auto 6px; }
+
+/* Tính nhanh */
+.drill-card { margin-top: 14px; text-align: center; }
+.drill-question {
+  font-size: 3rem; font-weight: 800; color: #2c3e55;
+  padding: 22px 0 28px; font-variant-numeric: tabular-nums;
+}
+.drill-options { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.drill-option {
+  border: 3px solid var(--border); border-radius: 16px; background: #fffdf8;
+  padding: 20px 10px; font-size: 1.7rem; font-weight: 800; cursor: pointer;
+  font-family: inherit; transition: all .1s; color: #2c3e55;
+  font-variant-numeric: tabular-nums;
+}
+.drill-option:hover:not(:disabled) { border-color: #6a7dff; background: #eef1ff; transform: translateY(-2px); }
+.drill-option:active { transform: scale(.96); }
+.drill-option.correct { border-color: var(--green); background: #e9fbef; }
+.drill-option.wrong { border-color: var(--red); background: #ffecec; animation: shake .3s; }
+.drill-option:disabled { cursor: default; }
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-6px); }
+  75% { transform: translateX(6px); }
+}
+.drill-streak { font-size: 1.2rem; font-weight: 800; color: #ff5d2e; min-width: 52px; text-align: center; }
+.drill-fill { background: linear-gradient(90deg, #3ecf6e, #a5e8bd); }
+.drill-final-score { font-size: 2.6rem; font-weight: 800; color: #4a5fd0; margin: 10px 0; }
+
+@media (max-width: 520px) {
+  .drill-question { font-size: 2.3rem; }
+  .drill-option { font-size: 1.4rem; padding: 16px 8px; }
+}
